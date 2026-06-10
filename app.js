@@ -76,14 +76,14 @@ function setupCVBuilder() {
     themeToggle.addEventListener('click', () => {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      themeToggle.innerHTML = isDark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+      themeToggle.innerHTML = isDark ? '🌙' : '☀️';
       localStorage.setItem('globalpath_theme', isDark ? 'light' : 'dark');
     });
     // Load theme
     const savedTheme = localStorage.getItem('globalpath_theme');
     if (savedTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
-      themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+      themeToggle.innerHTML = '☀️';
     }
   }
 
