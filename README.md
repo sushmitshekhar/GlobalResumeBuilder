@@ -1,4 +1,4 @@
-# 🌍 GlobalPath Resume Builder
+# 🌍 ATS-Optimized Resume Builder
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
@@ -57,7 +57,7 @@ Build a polished, professional CV in minutes — with live preview, real-time AT
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/globalpath-resume-builder.git
+git clone https://github.com/sushmitshekhar/GlobalResumeBuilder.git
 
 # Open in browser
 open index.html          # macOS
@@ -66,7 +66,7 @@ start index.html         # Windows
 ```
 
 ### Option 2: Hosted Version
-> *Coming soon — deploy to GitHub Pages, Netlify, or Vercel.*
+> **Live Demo:** [https://sushmitshekhar.github.io/GlobalResumeBuilder/](https://sushmitshekhar.github.io/GlobalResumeBuilder/)
 
 ---
 
@@ -88,7 +88,7 @@ This project is licensed under the **MIT License** — free to use, modify, and 
 ```
 MIT License
 
-Copyright (c) 2025 GlobalPath
+Copyright (c) 2024 Sushmit Shekhar
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -112,6 +112,6 @@ SOFTWARE.
 ---
 
 <p align="center">
-  Built with ❤️ for the global workforce<br>
-  <strong>GlobalPath</strong> — Your bridge to international careers
+  Built with ❤️ by <strong>Sushmit Shekhar</strong><br>
+  Open Source ATS-Optimized Resume Builder
 </p>
