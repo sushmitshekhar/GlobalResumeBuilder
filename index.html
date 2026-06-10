@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl0GPpGt/8JYyZ+g5bkNhYhS4grU/Y/zEcIGvy8d9Qvx+PFpiFCf4ZdAx0t28kYBQgsE+Bzjkodqg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=1.0.3">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -38,8 +38,9 @@
         </div>
       </div>
       <div class="header-actions">
-        <span class="header-badge"><i class="fa-solid fa-shield-check"></i> ATS Optimized</span>
-        <span class="header-badge badge-glow"><i class="fa-solid fa-bolt"></i> Live Preview</span>
+        <button class="btn btn-outline btn-sm" id="btnThemeToggle" title="Toggle Dark/Light Mode" style="font-size:1.1rem; padding: 6px 12px; border-color: var(--border-color);">
+          🌙
+        </button>
       </div>
     </div>
   </header>
@@ -76,9 +77,6 @@
       </div>
 
       <div class="toolbar-section toolbar-actions">
-        <button class="btn btn-outline btn-sm" id="btnThemeToggle" title="Toggle Dark/Light Mode">
-          🌙
-        </button>
         <button class="btn btn-outline-cyan btn-sm" id="btnSaveDraft" title="Save Draft">
           <i class="fa-solid fa-floppy-disk"></i> <span class="btn-label">Save Draft</span>
         </button>
@@ -302,6 +300,6 @@
   </footer>
 
   <!-- JavaScript -->
-  <script src="app.js?v=1.0.3"></script>
+  <script src="app.js"></script>
 </body>
 </html>
