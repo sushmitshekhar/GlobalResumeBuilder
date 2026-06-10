@@ -70,6 +70,13 @@ function setupCVBuilder() {
     });
   }
 
+  // Accordion toggle
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.closest('.accordion-section').classList.toggle('open');
+    });
+  });
+
   // Theme toggle
   const themeToggle = document.getElementById('btnThemeToggle');
   if (themeToggle) {

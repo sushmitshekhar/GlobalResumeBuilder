@@ -479,11 +479,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: default;
+  cursor: pointer;
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
+  transition: background var(--transition-fast);
+}
+
+.accordion-header:hover {
+  background: rgba(148, 163, 184, 0.05);
 }
 
 .accordion-header span {
@@ -494,11 +499,14 @@ body {
 
 .accordion-header i:first-child {
   color: var(--accent-cyan);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .accordion-chevron {
-  display: none;
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  transition: transform var(--transition-base);
 }
 
 .accordion-section.open .accordion-chevron {
@@ -506,11 +514,12 @@ body {
 }
 
 .accordion-body {
+  display: none;
   padding: 0 20px 20px;
 }
 
 .accordion-section.open .accordion-body {
-  padding: 0 20px 20px;
+  display: block;
 }
 
 /* Form Groups */
@@ -746,11 +755,25 @@ textarea {
 
 .cv-preview-wrapper {
   flex: 1;
-  overflow: auto;
-  padding: 24px;
+  overflow-y: auto;
+  padding: 30px;
+  background: var(--bg-dark);
   display: flex;
   justify-content: center;
-  background: rgba(30, 41, 59, 0.3);
+  align-items: flex-start;
+}
+
+.cv-preview-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cv-preview-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+}
+
+.cv-preview-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
 }
 
 /* ============================================================
