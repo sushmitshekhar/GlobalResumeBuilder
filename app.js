@@ -158,6 +158,25 @@ function setupCVBuilder() {
   const loadBtn = document.getElementById('btnLoadDraft');
   if (loadBtn) loadBtn.addEventListener('click', loadCVDraft);
 
+  // Audit Resume Modal & Upload
+  const uploadBtn = document.getElementById('btnUploadResume');
+  const uploadInput = document.getElementById('pdfUploadInput');
+  const modal = document.getElementById('auditModal');
+  const closeBtn = document.getElementById('btnCloseModal');
+
+  if (uploadBtn && uploadInput) {
+    uploadBtn.addEventListener('click', () => uploadInput.click());
+    uploadInput.addEventListener('change', handlePDFUpload);
+  }
+
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    // Close on click outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+  }
+
   // Initial render
   renderExperienceEntries();
   renderEducationEntries();
@@ -853,4 +872,144 @@ function copyMarkdownCV() {
     document.body.removeChild(ta);
     flashButton('btnCopyMarkdown', 'Copied!');
   });
+}
+
+// ============================================================
+// PDF AUDIT (Heuristics)
+// ============================================================
+async function handlePDFUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf') {
+    alert('Please upload a PDF file.');
+    return;
+  }
+
+  const modal = document.getElementById('auditModal');
+  const tipsEl = document.getElementById('auditTips');
+  const fillEl = document.getElementById('auditFill');
+  const percentEl = document.getElementById('auditPercentage');
+
+  if (modal) modal.classList.add('active');
+  if (percentEl) percentEl.textContent = '...';
+  if (fillEl) fillEl.style.width = '0%';
+  if (tipsEl) {
+    tipsEl.innerHTML = `<div style="width: 100%; text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 20px;">
+      <i class="fa-solid fa-spinner fa-spin"></i> Analyzing PDF document...
+    </div>`;
+  }
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    // Using pdfjsLib loaded via CDN in index.html
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const strings = content.items.map(item => item.str);
+      fullText += strings.join(' ') + '\n';
+    }
+
+    auditResumeText(fullText);
+  } catch (error) {
+    console.error('Error parsing PDF:', error);
+    if (tipsEl) {
+      tipsEl.innerHTML = `<div style="width: 100%; text-align: center; color: var(--accent-rose); font-size: 0.9rem; padding: 20px;">
+        <i class="fa-solid fa-triangle-exclamation"></i> Failed to parse PDF. Ensure it is a text-based PDF, not a scanned image.
+      </div>`;
+    }
+  }
+
+  // Reset input so same file can be uploaded again
+  event.target.value = '';
+}
+
+function auditResumeText(text) {
+  const checks = [];
+  const lowerText = text.toLowerCase();
+
+  // 1. Length Check
+  const wordCount = text.split(/\s+/).length;
+  checks.push({
+    label: 'Length',
+    pass: wordCount > 150 && wordCount < 1000,
+    warn: wordCount <= 150,
+    tip: wordCount > 150 && wordCount < 1000 ? `Good length (${wordCount} words)` : `Word count might be off (${wordCount})`
+  });
+
+  // 2. Email
+  const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi;
+  const hasEmail = emailRegex.test(text);
+  checks.push({
+    label: 'Email',
+    pass: hasEmail,
+    tip: hasEmail ? 'Email address found' : 'No email address found'
+  });
+
+  // 3. Phone (Basic regex)
+  const phoneRegex = /(?:\+?\d{1,3}[-\s]?)?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}/g;
+  const hasPhone = phoneRegex.test(text);
+  checks.push({
+    label: 'Phone',
+    pass: hasPhone,
+    tip: hasPhone ? 'Phone number found' : 'No phone number found'
+  });
+
+  // 4. LinkedIn
+  const hasLinkedIn = lowerText.includes('linkedin.com');
+  checks.push({
+    label: 'LinkedIn',
+    pass: hasLinkedIn,
+    tip: hasLinkedIn ? 'LinkedIn URL found' : 'No LinkedIn URL found'
+  });
+
+  // 5. Sections
+  const hasExp = lowerText.includes('experience') || lowerText.includes('employment') || lowerText.includes('work history');
+  const hasEdu = lowerText.includes('education') || lowerText.includes('academic') || lowerText.includes('university');
+  const hasSkills = lowerText.includes('skills') || lowerText.includes('technologies');
+
+  checks.push({
+    label: 'Experience Section', pass: hasExp, tip: hasExp ? 'Experience section detected' : 'Missing Experience section'
+  });
+  checks.push({
+    label: 'Education Section', pass: hasEdu, tip: hasEdu ? 'Education section detected' : 'Missing Education section'
+  });
+  checks.push({
+    label: 'Skills Section', pass: hasSkills, tip: hasSkills ? 'Skills section detected' : 'Missing Skills section'
+  });
+
+  // 6. Action Verbs
+  const actionVerbs = ['managed', 'developed', 'led', 'designed', 'created', 'implemented', 'improved', 'increased', 'reduced', 'coordinated', 'achieved', 'built'];
+  let verbCount = 0;
+  actionVerbs.forEach(v => {
+    if (lowerText.includes(v)) verbCount++;
+  });
+  checks.push({
+    label: 'Action Verbs',
+    pass: verbCount >= 3,
+    warn: verbCount > 0 && verbCount < 3,
+    tip: verbCount >= 3 ? 'Strong use of action verbs' : 'Use more action verbs (e.g. Led, Developed)'
+  });
+
+  // Calculate Score
+  const passed = checks.filter(c => c.pass).length;
+  const score = Math.round((passed / checks.length) * 100);
+
+  // Update DOM
+  const percentEl = document.getElementById('auditPercentage');
+  const fillEl = document.getElementById('auditFill');
+  const tipsEl = document.getElementById('auditTips');
+
+  if (percentEl) percentEl.textContent = `${score}%`;
+  if (fillEl) fillEl.style.width = `${score}%`;
+
+  if (tipsEl) {
+    tipsEl.innerHTML = checks.map(c => {
+      const cls = c.pass ? 'pass' : (c.warn ? 'warn' : 'fail');
+      const icon = c.pass ? 'fa-circle-check' : (c.warn ? 'fa-triangle-exclamation' : 'fa-circle-xmark');
+      return `<span class="ats-tip ${cls}"><i class="fa-solid ${icon}"></i> ${c.tip}</span>`;
+    }).join('');
+  }
 }

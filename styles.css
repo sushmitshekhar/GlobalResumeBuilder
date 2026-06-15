@@ -1186,6 +1186,10 @@ textarea {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .btn-icon:hover {
@@ -1215,6 +1219,18 @@ textarea {
 
 .btn-purple:hover {
   box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-emerald {
+  background: linear-gradient(135deg, var(--accent-emerald), #047857);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.25);
+}
+
+.btn-emerald:hover {
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
   transform: translateY(-1px);
 }
 
@@ -1320,6 +1336,81 @@ textarea {
   font-size: 0.72rem !important;
   color: var(--text-muted);
   opacity: 0.7;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--bg-panel-solid);
+  width: 90%;
+  max-width: 600px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(20px) scale(0.95);
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-panel);
+}
+
+.modal-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-header h2 i {
+  color: var(--accent-emerald);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.audit-disclaimer {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 /* ============================================================
