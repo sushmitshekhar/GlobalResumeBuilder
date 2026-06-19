@@ -149,8 +149,8 @@ function setupCVBuilder() {
   const copyBtn = document.getElementById('btnCopyMarkdown');
   if (copyBtn) copyBtn.addEventListener('click', copyMarkdownCV);
 
-  const printBtn = document.getElementById('btnPrint');
-  if (printBtn) printBtn.addEventListener('click', () => window.print());
+  const downloadBtn = document.getElementById('btnDownload');
+  if (downloadBtn) downloadBtn.addEventListener('click', downloadPDF);
 
   const saveBtn = document.getElementById('btnSaveDraft');
   if (saveBtn) saveBtn.addEventListener('click', saveCVDraft);
@@ -904,7 +904,7 @@ async function handlePDFUpload(event) {
     // Using pdfjsLib loaded via CDN in index.html
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let fullText = '';
-    
+
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
@@ -1012,4 +1012,78 @@ function auditResumeText(text) {
       return `<span class="ats-tip ${cls}"><i class="fa-solid ${icon}"></i> ${c.tip}</span>`;
     }).join('');
   }
+}
+
+// ============================================================
+// DOWNLOAD PDF
+// ============================================================
+function downloadPDF() {
+  const paper = document.getElementById('cvPreviewPaper');
+  if (!paper) return;
+
+  const btn = document.getElementById('btnDownload');
+  const originalBtnText = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span class="btn-label">Generating...</span>';
+  btn.disabled = true;
+
+  // Clone paper to avoid affecting the live preview
+  const clone = paper.cloneNode(true);
+
+  // Create an off-screen container
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.top = '-9999px';
+  container.style.left = '-9999px';
+
+  // Preserve template class from parent
+  const previewPanel = paper.closest('.preview-panel');
+  if (previewPanel) {
+    const classes = Array.from(previewPanel.classList).filter(c => c.startsWith('template-'));
+    classes.forEach(c => container.classList.add(c));
+  }
+
+  // Remove interactive/visual effects from the clone
+  clone.style.boxShadow = 'none';
+  clone.style.transform = 'none';
+  clone.style.transition = 'none';
+  clone.style.margin = '0';
+  clone.style.minHeight = 'auto';
+  clone.style.height = 'auto';
+
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
+  const opt = {
+    margin: 0,
+    filename: 'Resume.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      scrollY: 0
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(clone).toPdf().get('pdf').then((pdf) => {
+    pdf.setProperties({
+      title: 'Resume',
+      author: 'Sushmit Shekhar',
+      creator: 'Sushmit Shekhar',
+      subject: 'https://www.linkedin.com/in/sushmitshekhar/',
+      keywords: 'resume, cv, Sushmit Shekhar'
+    });
+  }).save().then(() => {
+    document.body.removeChild(container);
+    btn.innerHTML = originalBtnText;
+    btn.disabled = false;
+    flashButton('btnDownload', 'Downloaded!');
+  }).catch(err => {
+    console.error(err);
+    document.body.removeChild(container);
+    btn.innerHTML = originalBtnText;
+    btn.disabled = false;
+    alert("Error generating PDF.");
+  });
 }

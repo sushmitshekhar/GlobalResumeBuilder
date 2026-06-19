@@ -7,6 +7,8 @@
   <meta name="description" content="Build an ATS-optimized, professional resume tailored for international jobs. Choose from elegant templates, get a live ATS score, and export to PDF instantly. Built by Sushmit Shekhar.">
   <meta name="keywords" content="resume builder, CV maker, ATS optimized resume, free resume creator, Europass CV, modern resume templates, Sushmit Shekhar">
   <meta name="author" content="Sushmit Shekhar">
+  <meta name="signature" content="Sushmit Shekhar">
+  <meta property="linkedin:profile" content="https://www.linkedin.com/in/sushmitshekhar/">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sushmitshekhar.github.io/GlobalResumeBuilder/">
 
@@ -95,8 +97,8 @@
         <button class="btn btn-outline btn-sm" id="btnCopyMarkdown" title="Copy Markdown">
           <i class="fa-solid fa-copy"></i> <span class="btn-label">Copy MD</span>
         </button>
-        <button class="btn btn-cyan btn-sm" id="btnPrint" title="Print / Export PDF">
-          <i class="fa-solid fa-print"></i> <span class="btn-label">Print / PDF</span>
+        <button class="btn btn-cyan btn-sm" id="btnDownload" title="Download PDF">
+          <i class="fa-solid fa-download"></i> <span class="btn-label">Download PDF</span>
         </button>
       </div>
     </div>
@@ -342,6 +344,8 @@
   </div>
 
   <!-- JavaScript -->
+  <!-- html2pdf.js for client-side PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <!-- PDF.js for client-side text extraction -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
